@@ -242,3 +242,4 @@ class LargestFragmentChooser(object):
             log.debug('New largest fragment: %s (%s)', smiles, atoms)
             largest = {'smiles': smiles, 'fragment': f, 'atoms': atoms, 'weight': weight, 'organic': organic}
         return largest['fragment']
+
