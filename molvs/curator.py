@@ -57,30 +57,29 @@ class TautomerCheck(CurationStep):
 
 class DuplicatesFilter(CurationStep):
     """ Class to eliminate duplicates """
-    def __init__(self, cmp_index, act_index, take='highest'):
-        self._cmp_index = cmp_index
+    def __init__(self, act_index, take='highest'):
         self._act_index = act_index
         if take == 'highest':
             self._keep = 'last'
         elif take == 'lowest':
             self._keep = 'first'
 
-    def filterFunction(self, df):
-        df['smiles'] = [Chem.MolToSmiles(mol) for mol in df[self._cmp_index]]
+    def filterFunction(self, df, cmp_index):
+        df['smiles'] = [Chem.MolToSmiles(mol) for mol in df[cmp_index]]
         df.sort_values(['smiles', self._act_index], inplace=True)
         df.drop_duplicates(subset=['smiles'], keep=self._keep, inplace=True)
         df.drop('smiles', axis=1, inplace=True)
         return df
 
-    def runStep(self, df):
-        return self.filterFunction(df)
+    def runStep(self, df, cmp_index):
+        return self.filterFunction(df, cmp_index)
 
 
 CURATION_STEPS=(
     MixturesFilter(),
     Neutralize(),
     TautomerCheck(),
-    DuplicatesFilter()
+#    DuplicatesFilter(1)
 )
 
 class CurationPipeline:

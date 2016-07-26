@@ -86,8 +86,8 @@ class PipelineTestUM:
         """ Testing class DuplicatesFilter"""
         df = pd.concat([self.controls, self.controls])
 
-        self.cc = self.cc.addStep(DuplicatesFilter(self.mol_idx, 1))
-        testMols = self.cc.run(df)
+        self.cc = self.cc.addStep(DuplicatesFilter(1))
+        testMols = self.cc.run(df, 0)
 
         testMols.iloc[:, self.mol_idx] = testMols.iloc[:, self.mol_idx].map(Chem.MolToSmiles)
         self.controls.iloc[:, self.mol_idx] = self.controls.iloc[:, self.mol_idx].map(Chem.MolToSmiles)
@@ -101,7 +101,7 @@ class PipelineTestUM:
         """ Testing class Neutralize"""
 
         self.cc = self.cc.addStep(Neutralize())
-        testMols = self.cc.run(self.pre_neutralized)
+        testMols = self.cc.run(self.pre_neutralized, 0)
 
         testMols.iloc[:, self.mol_idx] = testMols.iloc[:, self.mol_idx].apply(Chem.MolToSmiles)
         self.neutralized.iloc[:, self.mol_idx] = self.neutralized.iloc[:, self.mol_idx].apply(Chem.MolToSmiles)
