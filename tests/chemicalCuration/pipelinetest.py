@@ -108,4 +108,27 @@ class PipelineTestUM:
 
         assert np.array_equal(testMols.values, self.neutralized.values)
 
+    def full_test_from_dataframe(self):
+        """ Testing full pipeline from DataFrame """
+        steps = [
+            MixturesFilter(),
+            Neutralize(),
+            TautomerCheck(),
+            DuplicatesFilter(1)]
+        pipeline = CurationPipeline(steps=steps)
+        df = pipeline.run(self.df, 0)
+        assert not df.empty
+
+    def full_test_from_file(self):
+        """ Testing full pipeline from file """
+        steps = [
+            MixturesFilter(),
+            Neutralize(),
+            TautomerCheck(),
+            DuplicatesFilter(1)]
+        pipeline = CurationPipeline(steps=steps)
+        df = pipeline.runFile(r'tests/test_data/database_file.csv', smiles_col=0)
+        assert not df.empty
+
+
 

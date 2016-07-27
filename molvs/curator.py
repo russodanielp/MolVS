@@ -65,7 +65,8 @@ class DuplicatesFilter(CurationStep):
             self._keep = 'first'
 
     def filterFunction(self, df, cmp_index):
-        df['smiles'] = [Chem.MolToSmiles(mol) for mol in df[cmp_index]]
+        # TODO Fix this SettingWithCopyWarning
+        df.loc[:, 'smiles'] = [Chem.MolToSmiles(mol) for mol in df[cmp_index]]
         df.sort_values(['smiles', self._act_index], inplace=True)
         df.drop_duplicates(subset=['smiles'], keep=self._keep, inplace=True)
         df.drop('smiles', axis=1, inplace=True)
@@ -101,13 +102,18 @@ class CurationPipeline:
             new_df = step.runStep(new_df, cmp_index)
         return new_df
 
-    def runFile(self, filename, delimiter='\t'):
+    def runFile(self, filename, smiles_col='0', **kwargs):
         """
+        Reads database file performs specified curation steps.
+
         :param filename: name of activity file
-        :param delimiter: delimiter of the file
-        :return: None
+        :param smiles_col: column index of smiles
+
+        :param **kwargs: ::ref:: Pandas.read_csv()
+
+        :return: Curated database in Pandas DataFrame
         """
-        df = pd.read_csv(filename, delimiter=delimiter, header=None, dtype=str)
-        df.columns = ['smiles', 'activity']
-        df['rdkit_mols'] = [Chem.MolFromSmiles(smi) for smi in df['smiles']]
-        return self.run(df)
+        df = pd.read_csv(filename, **kwargs)
+        df.columns = [i for i in range(len(df.columns))]
+        df[smiles_col] = [Chem.MolFromSmiles(smi) for smi in df[smiles_col]]
+        return self.run(df, smiles_col)
