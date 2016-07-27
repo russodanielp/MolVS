@@ -8,27 +8,27 @@ class PipelineTestUM:
     def setup(self):
         self.cc = CurationPipeline(steps=[])
         self.Mols =  [
-                        ['[Na+].[Cl-]', 1], # NaCl - inorganic molecule
-                        ['[NH4+].[SH-]', 1],# Ammonium Bisulfide - Inorganic molecule
-                        ['[C-]#[O+].C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)'  # Tris(triphenylphosphine)rhodium carbonyl hydride - organometallic
-                        'P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.[Rh]', 0],
-                        ['C1=C[C-]=CC=C[C-]=C1.C1=C[C-]=CC=C[C-]=C1.[U+4]', 0], # Uranocene - organometallic
-                        ['CC(=O)OC1=CC=CC=C1C(=O)O.CC(=O)NC1=CC=C(C=C1)O', 0],  # Aspirin/Acetaminophen - mixture
-                        ['C1CN(CCN1CCOCCO)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl.Cl.Cl', 1], # Hydroxyzine Dihydrochloride - salt
-                        ['CC(=O)OC1=CC=CC=C1C(=O)O', 1],# Aspirin - organic compound
-                        ['CC(=O)NC1=CC=C(C=C1)O', 0]# Acetaminophen - organic compound
-                      ]
+            ['[Na+].[Cl-]', 1], # NaCl - inorganic molecule
+            ['[NH4+].[SH-]', 1],# Ammonium Bisulfide - Inorganic molecule
+            ['[C-]#[O+].C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)'  # Tris(triphenylphosphine)rhodium carbonyl hydride - organometallic
+             'P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.[Rh]', 0],
+            ['C1=C[C-]=CC=C[C-]=C1.C1=C[C-]=CC=C[C-]=C1.[U+4]', 0], # Uranocene - organometallic
+            ['CC(=O)OC1=CC=CC=C1C(=O)O.CC(=O)NC1=CC=C(C=C1)O', 0],  # Aspirin/Acetaminophen - mixture
+            ['C1CN(CCN1CCOCCO)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl.Cl.Cl', 1], # Hydroxyzine Dihydrochloride - salt
+            ['CC(=O)OC1=CC=CC=C1C(=O)O', 1],# Aspirin - organic compound
+            ['CC(=O)NC1=CC=C(C=C1)O', 0]# Acetaminophen - organic compound
+        ]
         self.pre_neut_mols = ["c1cccc[nH+]1",
-                          "C[N+](C)(C)C",
-                          "c1ccccc1[NH3+]",
-                          "CC(=O)[O-]",
-                          "c1ccccc1[O-]",
-                          "CCS",
-                          "C[N-]S(=O)(=O)C",
-                          "C[N-]C=C",
-                          "C[N-]N=C",
-                          "c1ccc[n-]1",
-                          "CC[N-]C(=O)CC"]
+                              "C[N+](C)(C)C",
+                              "c1ccccc1[NH3+]",
+                              "CC(=O)[O-]",
+                              "c1ccccc1[O-]",
+                              "CCS",
+                              "C[N-]S(=O)(=O)C",
+                              "C[N-]C=C",
+                              "C[N-]N=C",
+                              "c1ccc[n-]1",
+                              "CC[N-]C(=O)CC"]
 
 
         self.neut_mols = ["c1ncccc1",
@@ -56,9 +56,9 @@ class PipelineTestUM:
 
 
 
-        # self.testFile = 'activity_file.txt'
-
         self.mol_idx = 0
+    # self.testFile = 'activity_file.txt'
+
 
 
     def test_mixtures_filter(self):

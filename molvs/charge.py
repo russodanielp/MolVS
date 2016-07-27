@@ -192,6 +192,7 @@ class Uncharger(object):
         :rtype: :rdkit:`Mol <Chem.rdchem.Mol-class.html>`
         """
         log.debug('Running Uncharger')
+        log.info('Uncharging: %s', Chem.MolToSmiles(mol))
         mol = copy.deepcopy(mol)
         # Get atom ids for matches
         p = [x[0] for x in mol.GetSubstructMatches(self._pos_h)]

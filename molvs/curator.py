@@ -8,8 +8,9 @@ from molvs.tautomer import TautomerCanonicalizer
 from molvs.charge import Uncharger
 from molvs.fragment import LargestFragmentChooser
 import pandas as pd
-import re
+import logging
 
+log = logging.getLogger(__name__)
 
 class CurationStep:
 
@@ -24,6 +25,7 @@ class MixturesFilter(CurationStep):
         self.chooser = LargestFragmentChooser(**kwargs)
 
     def filterFunction(self, cmp):
+        print(Chem.MolToSmiles(cmp))
         return self.chooser.choose(cmp)
 
     def runStep(self, df, cmp_index):
@@ -76,12 +78,6 @@ class DuplicatesFilter(CurationStep):
         return self.filterFunction(df, cmp_index)
 
 
-CURATION_STEPS=(
-    MixturesFilter(),
-    Neutralize(),
-    TautomerCheck(),
-#    DuplicatesFilter(1)
-)
 
 class CurationPipeline:
     """class for creating a MolVS curation pipeline"""
@@ -102,7 +98,7 @@ class CurationPipeline:
             new_df = step.runStep(new_df, cmp_index)
         return new_df
 
-    def runFile(self, filename, smiles_col='0', **kwargs):
+    def runFile(self, filename, smiles_col=0, **kwargs):
         """
         Reads database file performs specified curation steps.
 
@@ -113,6 +109,7 @@ class CurationPipeline:
 
         :return: Curated database in Pandas DataFrame
         """
+        log.debug("CurationPipeline.runFile()")
         df = pd.read_csv(filename, **kwargs)
         df.columns = [i for i in range(len(df.columns))]
         df[smiles_col] = [Chem.MolFromSmiles(smi) for smi in df[smiles_col]]
