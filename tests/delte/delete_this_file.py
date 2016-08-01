@@ -17,7 +17,7 @@ class ReachDatabaseTestUM:
             StandardizeStep(),
             MixturesFilter(),
             Neutralize(),
-            #TautomerCheck(),
+            TautomerCheck(max_tautomers=10),
             DuplicatesFilter()
              ]
         self.cc = CurationPipeline(steps=steps)
@@ -50,5 +50,5 @@ class ReachDatabaseTestUM:
                          quoting=csv.QUOTE_NONNUMERIC, doublequote=False)
         new_df = self.cc.run(df, 9)
 
-        assert False
+        assert df.shape[1] == new_df.shape[1]
 
