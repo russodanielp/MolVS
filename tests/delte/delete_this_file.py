@@ -42,6 +42,7 @@ class ReachDatabaseTestUM:
         df = pd.read_csv("tests/test_data/ReachChemicalIds_dropsmiles.csv",
                          sep=",", quotechar='"', escapechar='\\', encoding='utf-8',
                          quoting=csv.QUOTE_NONNUMERIC, doublequote=False)
-        self.cc.run(df, 9)
-        assert df.empty
+        new_df = self.cc.run(df, 9)
+
+        assert len(new_df) == len(df)
 
