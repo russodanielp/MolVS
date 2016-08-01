@@ -7,16 +7,55 @@ from rdkit.Chem import AllChem
 from molvs.tautomer import TautomerCanonicalizer
 from molvs.charge import Uncharger
 from molvs.fragment import LargestFragmentChooser
+from molvs.standardize import Standardizer
 import pandas as pd
 import logging
 
 log = logging.getLogger(__name__)
+
+
+# TODO Gracefully keep track of compounds lost in each step through a log explaining why each compound was eliminated
 
 class CurationStep:
 
     def runStep(self, df, cmp_index):
         raise NotImplementedError("Please implement this method")
 
+
+class CreateRDKitMols(CurationStep):
+    """Instantiates RDKit Mols from Smiles for an entire Pandas DF column"""
+
+    def __init__(self):
+        log.debug("Initializing CreateRDKitMols")
+        self._rdkitMols = []
+
+    def stepFunction(self, cmp):
+        log.debug("Running CreateRDKitMols on {0}".format(cmp))
+        return Chem.MolFromSmiles(cmp)
+
+    def runStep(self, df, cmp_index):
+        df.iloc[:, cmp_index] = [self.stepFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
+        return df
+
+class StandardizeStep(CurationStep):
+    """class to standadize all molecules before use in the pipeline"""
+    def __init__(self, **kwargs):
+        log.debug("Initializing StandardizeStep")
+        self.standardizer = Standardizer(**kwargs)
+
+
+    def filterFunction(self, cmp):
+        try:
+            return self.standardizer.standardize(cmp)
+        except ValueError as e:
+            log.error("{0} on {1}".format(e, cmp))
+
+
+
+    def runStep(self, df, cmp_index):
+        log.debug("Running StandardizeStep")
+        df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
+        return df
 
 
 class MixturesFilter(CurationStep):
@@ -29,7 +68,7 @@ class MixturesFilter(CurationStep):
         return self.chooser.choose(cmp)
 
     def runStep(self, df, cmp_index):
-        df.iloc[:, cmp_index] = [self.filterFunction(mol) for mol in df[cmp_index]]
+        df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
         return df.dropna(subset=[cmp_index])
 
 
@@ -42,7 +81,7 @@ class Neutralize(CurationStep):
         return self.neutralizer.uncharge(cmp)
 
     def runStep(self, df, cmp_index):
-        df.iloc[:, cmp_index] = [self.filterFunction(mol) for mol in df[cmp_index]]
+        df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
         return df
 
 class TautomerCheck(CurationStep):
@@ -54,7 +93,7 @@ class TautomerCheck(CurationStep):
         return self.tautomerizer.canonicalize(cmp)
 
     def runStep(self, df, cmp_index):
-        df.iloc[:, cmp_index] = [self.filterFunction(mol) for mol in df[cmp_index]]
+        df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
         return df
 
 class DuplicatesFilter(CurationStep):
@@ -68,7 +107,7 @@ class DuplicatesFilter(CurationStep):
 
     def filterFunction(self, df, cmp_index):
         # TODO Fix this SettingWithCopyWarning
-        df.loc[:, 'smiles'] = [Chem.MolToSmiles(mol) for mol in df[cmp_index]]
+        df.loc[:, 'smiles'] = [Chem.MolToSmiles(mol) if mol else None for mol in df.iloc[:, cmp_index]]
         df.sort_values(['smiles', self._act_index], inplace=True)
         df.drop_duplicates(subset=['smiles'], keep=self._keep, inplace=True)
         df.drop('smiles', axis=1, inplace=True)

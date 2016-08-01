@@ -59,18 +59,24 @@ class PipelineTestUM:
         self.mol_idx = 0
     # self.testFile = 'activity_file.txt'
 
+    def test_standarize_step(self):
+        """ Testing the standardize step"""
 
+        df = pd.concat([self.mixtures, self.controls])
+
+        self.cc = self.cc.addStep(MixturesFilter())
+        testMols = self.cc.run(df, self.mol_idx)
+        assert not testMols.empty
 
     def test_mixtures_filter(self):
         """ Testing class MixturesFilter"""
-
 
         df = pd.concat([self.mixtures, self.controls])
 
         self.cc = self.cc.addStep(MixturesFilter())
         testMols = self.cc.run(df, self.mol_idx)
 
-        # Hydroxyzine Dihydrochloride is a salt/mixture that will have a large organic component to be kepy
+        # Hydroxyzine Dihydrochloride is a salt/mixture thatPip will have a large organic component to be kepy
         # this is that component that needs to be added to the controls
         hydroxy_dichlor = pd.DataFrame([[Chem.MolFromSmiles(mol), 1] for mol in ['C1CN(CCN1CCOCCO)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl']])
         other_compound = pd.DataFrame([[Chem.MolFromSmiles(mol), 0] for mol in ['CC(=O)Oc1ccccc1C(=O)O']])

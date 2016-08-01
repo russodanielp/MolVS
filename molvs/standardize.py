@@ -91,6 +91,7 @@ class Standardizer(object):
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         mol = self.disconnect_metals(mol)
+        log.debug(Chem.MolToSmiles(mol))
         mol = self.normalize(mol)
         mol = self.reionize(mol)
         Chem.AssignStereochemistry(mol, force=True, cleanIt=True)
