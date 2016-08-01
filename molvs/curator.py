@@ -64,12 +64,12 @@ class MixturesFilter(CurationStep):
         self.chooser = LargestFragmentChooser(**kwargs)
 
     def filterFunction(self, cmp):
-        print(Chem.MolToSmiles(cmp))
         return self.chooser.choose(cmp)
 
     def runStep(self, df, cmp_index):
         df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
-        return df.dropna(subset=[cmp_index])
+        subset = df.columns[cmp_index]
+        return df.dropna(subset=[subset])
 
 
 class Neutralize(CurationStep):
@@ -98,7 +98,7 @@ class TautomerCheck(CurationStep):
 
 class DuplicatesFilter(CurationStep):
     """ Class to eliminate duplicates """
-    def __init__(self, act_index, take='highest'):
+    def __init__(self, act_index=None, take='highest'):
         self._act_index = act_index
         if take == 'highest':
             self._keep = 'last'
@@ -108,7 +108,9 @@ class DuplicatesFilter(CurationStep):
     def filterFunction(self, df, cmp_index):
         # TODO Fix this SettingWithCopyWarning
         df.loc[:, 'smiles'] = [Chem.MolToSmiles(mol) if mol else None for mol in df.iloc[:, cmp_index]]
-        df.sort_values(['smiles', self._act_index], inplace=True)
+        # if there is an activity column, sort the values so the appropriate activity is kept
+        if self._act_index:
+            df.sort_values(['smiles', self._act_index], inplace=True)
         df.drop_duplicates(subset=['smiles'], keep=self._keep, inplace=True)
         df.drop('smiles', axis=1, inplace=True)
         return df

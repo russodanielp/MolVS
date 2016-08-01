@@ -1,4 +1,10 @@
-from molvs.curator import CurationPipeline, MixturesFilter, Neutralize, StandardizeStep, CreateRDKitMols
+from molvs.curator import CurationPipeline, \
+    MixturesFilter, \
+    Neutralize, \
+    StandardizeStep, \
+    CreateRDKitMols, \
+    TautomerCheck, \
+    DuplicatesFilter
 import pandas as pd
 import numpy as np
 
@@ -9,10 +15,10 @@ class ReachDatabaseTestUM:
         steps = [
             CreateRDKitMols(),
             StandardizeStep(),
-            #MixturesFilter(),
+            MixturesFilter(),
             Neutralize(),
             #TautomerCheck(),
-            #DuplicatesFilter(1)
+            DuplicatesFilter()
              ]
         self.cc = CurationPipeline(steps=steps)
 
@@ -44,5 +50,5 @@ class ReachDatabaseTestUM:
                          quoting=csv.QUOTE_NONNUMERIC, doublequote=False)
         new_df = self.cc.run(df, 9)
 
-        assert len(new_df) == len(df)
+        assert False
 

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1c90f175-9c3b-421a-bd75-9803265c6a95" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/molvs/curator.py" afterPath="$PROJECT_DIR$/molvs/curator.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/delte/delete_this_file.py" afterPath="$PROJECT_DIR$/tests/delte/delete_this_file.py" />
     </list>
     <ignored path="MolVS.iws" />
@@ -29,8 +30,8 @@
           <file leaf-file-name="curator.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/molvs/curator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="431">
-                  <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+                <state relative-caret-position="510">
+                  <caret line="112" column="69" selection-start-line="112" selection-start-column="69" selection-end-line="112" selection-end-column="69" />
                   <folding>
                     <element signature="e#32#86#0" expanded="true" />
                   </folding>
@@ -91,10 +92,10 @@
           <file leaf-file-name="delete_this_file.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tests/delte/delete_this_file.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="511">
-                  <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+                <state relative-caret-position="202">
+                  <caret line="20" column="29" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
                   <folding>
-                    <element signature="e#0#104#0" expanded="true" />
+                    <element signature="e#0#173#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -433,7 +434,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#104#0" expanded="true" />
+            <element signature="e#0#173#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -483,7 +484,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#104#0" expanded="true" />
+            <element signature="e#0#173#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -589,8 +590,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/molvs/curator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+        <state relative-caret-position="510">
+          <caret line="112" column="69" selection-start-line="112" selection-start-column="69" selection-end-line="112" selection-end-column="69" />
           <folding>
             <element signature="e#32#86#0" expanded="true" />
           </folding>
@@ -599,10 +600,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/delte/delete_this_file.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="511">
-          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+        <state relative-caret-position="202">
+          <caret line="20" column="29" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
           <folding>
-            <element signature="e#0#104#0" expanded="true" />
+            <element signature="e#0#173#0" expanded="true" />
           </folding>
         </state>
       </provider>
