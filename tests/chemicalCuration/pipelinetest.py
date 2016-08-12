@@ -2,8 +2,13 @@ from molvs.curator import *
 import pandas as pd
 import numpy as np
 
+# TODO: clean up these tests
 
-class PipelineTestUM:
+def skiptest(func):
+    pass
+
+
+class TestPipelineUM:
 
     def setup(self):
         self.cc = CurationPipeline(steps=[])
@@ -42,6 +47,8 @@ class PipelineTestUM:
                           "CNN=C",
                           "c1[nH]ccc1",
                           "CCNC(CC)=O"]
+
+
 
         self.Mols = [[Chem.MolFromSmiles(row[0]), row[1]] for row in self.Mols]
         self.df = pd.DataFrame(self.Mols)
@@ -114,6 +121,23 @@ class PipelineTestUM:
 
         assert np.array_equal(testMols.values, self.neutralized.values)
 
+    def test_inorangics(self):
+        """ Testing class InorganicsFilter"""
+
+        self.cc = self.cc.addStep(InorganicFilter())
+
+        df = pd.DataFrame([
+                            ['[Na+].[Cl-]', 1],
+                            ['[NH4+].[SH-]', 1],
+                            ['CC(=O)OC1=CC=CC=C1C(=O)O', 1],
+                            ['CC(=O)NC1=CC=C(C=C1)O', 0]
+                        ])
+
+        df[0] = [Chem.MolFromSmiles(mol) for mol in df[0]]
+        trueMols = df.iloc[2:, :]
+        testMols = self.cc.run(df, 0).dropna()
+        assert np.array_equal(testMols.values, trueMols.values)
+
     def full_test_from_dataframe(self):
         """ Testing full pipeline from DataFrame """
         steps = [
@@ -125,6 +149,7 @@ class PipelineTestUM:
         df = pipeline.run(self.df, 0)
         assert not df.empty
 
+    @skiptest
     def full_test_from_file(self):
         """ Testing full pipeline from file """
         steps = [

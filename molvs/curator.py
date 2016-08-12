@@ -1,15 +1,17 @@
 """
 Author: Daniel P. Russo
 """
-from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+
 from rdkit import Chem
-from rdkit.Chem import AllChem
+
+# had to change imports for pychemsim project
 from molvs.tautomer import TautomerCanonicalizer
 from molvs.charge import Uncharger
 from molvs.fragment import LargestFragmentChooser
 from molvs.standardize import Standardizer
 import pandas as pd
 import logging
+
 
 log = logging.getLogger(__name__)
 
@@ -34,8 +36,26 @@ class CreateRDKitMols(CurationStep):
         return Chem.MolFromSmiles(cmp)
 
     def runStep(self, df, cmp_index):
+        # drop null values in column containing smiles
+        df.dropna(subset=[df.columns[cmp_index]], inplace=True)
         df.iloc[:, cmp_index] = [self.stepFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
         return df
+
+class ReturnToSmiles(CurationStep):
+    """Converts RDKit Mols to Smiles for an entire Pandas DF column"""
+
+    def __init__(self):
+        log.debug("Initializing ReturnToSmiles")
+        self._rdkitMols = []
+
+    def stepFunction(self, cmp):
+        log.debug("Running ReturnToSmiles on {0}".format(cmp))
+        return Chem.MolToSmiles(cmp)
+
+    def runStep(self, df, cmp_index):
+        df.iloc[:, cmp_index] = [self.stepFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
+        return df
+
 
 class StandardizeStep(CurationStep):
     """class to standadize all molecules before use in the pipeline"""
@@ -49,7 +69,6 @@ class StandardizeStep(CurationStep):
             return self.standardizer.standardize(cmp)
         except ValueError as e:
             log.error("{0} on {1}".format(e, cmp))
-
 
 
     def runStep(self, df, cmp_index):
@@ -91,6 +110,20 @@ class TautomerCheck(CurationStep):
 
     def filterFunction(self, cmp):
         return self.tautomerizer.canonicalize(cmp)
+
+    def runStep(self, df, cmp_index):
+        df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
+        return df
+
+class InorganicFilter(CurationStep):
+    """ Filter removes any inorganic compounds, i.e., compounds not containingg Carbon"""
+
+    def __init__(self):
+        pass
+
+    def filterFunction(self, cmp):
+        C = Chem.MolFromSmarts('[#6]')
+        return cmp if cmp.HasSubstructMatch(C) else None
 
     def runStep(self, df, cmp_index):
         df.iloc[:, cmp_index] = [self.filterFunction(mol) if mol else None for mol in df.iloc[:, cmp_index]]
